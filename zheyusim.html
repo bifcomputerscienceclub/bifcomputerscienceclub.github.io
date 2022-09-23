@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Pendulum</title>
+</head>
+
+<h1 style="font-family:times_new_roman-serif;">Pendulum</h1>
+
+<canvas id="theCanvas" width=2000 height=1000 style="position:relative;">
+    Canvas not supported; please update your browser.
+</canvas>
+
+<script>
+    var theCanvas = document.getElementById("theCanvas");
+    var theContext = theCanvas.getContext("2d");
+    var stime = new Date();
+    var etime;
+    var cx = 750;
+    var cy = 100;
+    var rs = [];
+    for (let i = 0; i < 15; ++i) {
+        rs.push(Math.pow(60 / (Math.PI * 2 * (51 + i)), 2) * 9.81 * 1500);
+    }
+
+    var ithetas = [];
+    for (let i = 0; i < rs.length; ++i) {
+        ithetas.push(Math.PI / 3);
+    }
+    makeBall(ithetas);
+
+    function makeBall(ithetas) {
+        var thetas = [];
+        thetas.push(ithetas);
+        moveBall(thetas, ithetas);
+    }
+
+    function moveBall(thetas, ithetas) {
+        theContext.clearRect(0, 0, theCanvas.width, theCanvas.height);
+        etime = new Date();
+        for (let i = 0; i < rs.length; i++) {
+            var x = cx - rs[i] * Math.cos(thetas[i] + Math.PI / 2);
+            var y = cy + rs[i] * Math.sin(thetas[i] + Math.PI / 2);
+            thetas[i] = ithetas[i] * Math.cos(Math.sqrt(9.81 / rs[i]) * (etime - stime) / 100);
+            drawLine(x, y);
+            drawBall(x, y);
+        }
+        window.setTimeout(moveBall, 5, thetas, ithetas);
+    }
+
+    function drawBall(x, y) {
+        theContext.beginPath();
+        theContext.arc(x, y, 30, 0, 2 * Math.PI);
+        theContext.fillStyle = "darkgray";
+        theContext.fill();
+        theContext.beginPath();
+        theContext.arc(x, y, 20, 0, 2 * Math.PI);
+        theContext.fillStyle = "antiquewhite";
+        theContext.fill();
+    }
+
+    function drawLine(x, y) {
+        theContext.beginPath();
+        theContext.moveTo(x, y);
+        theContext.lineWidth = 3;
+        theContext.strokeStyle = "lightgray";
+        theContext.lineTo(cx, cy);
+        theContext.stroke();
+    }
+</script>
+
+
+</html>
